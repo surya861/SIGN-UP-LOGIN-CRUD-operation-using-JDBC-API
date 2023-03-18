@@ -1,0 +1,194 @@
+package std.controler;
+
+import java.util.List;
+import java.util.Scanner;
+
+import std.doa.student_doa;
+import std.dto.student;
+
+public class studentController {
+
+	public static void main(String[] args) {
+		Scanner s = new Scanner(System.in);
+		student_doa dao = new student_doa();
+		boolean b=true;
+		while (b) {
+			System.out.println("press 1 for sign up");
+			System.out.println("press 2 for login");
+			System.out.println("press 3 for forget password");
+			System.out.println("press 4 for exit ");
+			System.out.println();
+			System.out.println("enter your choice");
+			int choice = s.nextInt();
+			switch (choice) {
+
+			// if user choose for login
+			case 1:
+				System.out.println("please provide your id");
+				int id = s.nextInt();
+				System.out.println("please enter your name");
+				String name = s.next();
+				System.out.println("enter your age");
+				int age = s.nextInt();
+				System.out.println("enter your email");
+				String email = s.next();
+				System.out.println("enter your password");
+				String password = s.next();
+
+				student student = new student();
+				student.setId(id);
+				student.setName(name);
+				student.setAge(age);
+				student.setEmail(email);
+				student.setPassword(password);
+				dao.saveStudent(student);
+				break;
+
+			case 2:
+				System.out.println("enter your email");
+				String entered_email = s.next();
+				student s1 = dao.getStudentByEmail(entered_email);
+				if (s1 != null) {
+					System.out.println("enter your password");
+				String pass1 = s.next();
+				String password1 = s1.getPassword();
+				if (password1.equals(pass1)) {
+					System.out.println("pass1");
+					while (true) {
+						System.out.println("enter 1 for all student details");
+						System.out.println("enter 2 for all student derails by Id");
+						System.out.println("enter 3 for update student detils");
+
+						System.out.println("enter 4 for delete student details by id");
+						System.out.println("press 5 for log out");
+						System.out.println("entter your choice");
+						int choice1 = s.nextInt();
+						switch (choice1) {
+						case 1:
+							List<student> list = dao.getAllStudent();
+							System.out.println("Id\t\tname\t\tage\t\temail\t\tpassword");
+							for (student student2 : list) {
+								System.out.println(
+										student2.getId() + "\t\t" + student2.getName() + "\t\t" + student2.getAge()
+												+ "\t\t" + student2.getEmail() + "\t\t" + student2.getPassword());
+							}
+							break;
+						case 2:
+							System.out.println("enter your id");
+							int id1=s.nextInt();
+							student s2=dao.getStudentById(id1);
+							if(s2 !=null) {
+								System.out.println("Id\t\tname\t\tage\t\temail\t\tpassword");
+							System.out.println(s2.getId() + "\t\t" + s2.getName() + "\t\t" + s2.getAge()
+												+ "\t\t" + s2.getEmail() + "\t\t" + s2.getPassword());
+
+						}else {
+							System.out.println("id not found");
+							
+						}
+							break;
+							
+						case 3:
+							System.out.println("enter your  id");
+							int id2=s.nextInt();
+							student student3=dao.getStudentById(id2);
+							if(student3 !=null) {
+								System.out.println("press 1 for update name");
+								System.out.println("press 2 for update  age");
+								System.out.println("press 3 for update email");
+								System.out.println("enter your choice");
+								
+								int choice2 =s.nextInt();
+								switch(choice2) {
+								case 1:
+									System.out.println("enter your name to update ");
+									String name1=s.next();
+									student3.setName(name1);
+									dao.updateStudent(student3);
+									break;
+								
+									
+								case 2:
+									System.out.println("enter your marks to update");
+								int  age1=s.nextInt();
+									student3.setAge(age1);
+									dao.updateStudent(student3);
+									break;
+									
+								case 3:
+									System.out.println("enter your to update");
+									String email1=s.next();
+									student3.setEmail(email1);
+									dao.updateStudent(student3);
+									break;
+									default :
+										System.out.println("please enter valid choice");
+										break;
+								}
+										
+								}
+								else {
+									System.out.println("no id found");
+								}
+								
+							break;
+						case 4:
+							System.out.println("enter your id");
+							int id3=s.nextInt();
+						int i=dao.deleteById(id3);
+						if(i!=0) {
+							System.out.println("record deleted successfully");
+						}
+						else {
+							System.out.println("recort not deleted");
+						}
+							break;
+						case 5:
+							break;
+						}
+					}
+				}
+				
+				else {
+					System.out.println("incorrect password");
+				}
+			
+				}	else {
+					System.out.println("mail not found");
+				}
+			
+				break;
+				
+			case 3:
+				System.out.println("enter your email");
+				String email1=s.next();
+               student student2=dao.getStudentByEmail(email1);
+               if(student2 !=null) {
+            	   System.out.println("enter password has be changed");
+            	   String pass =s.next();
+            	   student2.setPassword(pass);
+            	   dao.changePassword(student2);
+               }
+               else {
+            	   System.out.println("mail not found");
+               }
+							
+							break;
+			case 4:
+				
+							b=false;
+							break;
+							default:
+								System.out.println("please enter valid choice");
+								break;
+			}
+			}
+								
+		
+
+					}
+
+
+}
+
+

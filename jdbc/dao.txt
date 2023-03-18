@@ -1,0 +1,224 @@
+package std.doa;
+
+import java.rmi.StubNotFoundException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.spi.DirStateFactory.Result;
+
+import std.dto.student;
+
+public class student_doa {
+
+	// load and regester the driver
+	static Connection connection;
+
+	public void saveStudent(student student) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			// connection between thhe drivers
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pg_practice", "root", "root");
+
+			// issue the sql query
+			PreparedStatement preparedStatement = connection.prepareStatement("insert into student value(?,?,?,?,?)");
+
+			// process the sql query
+			preparedStatement.setInt(1, student.getId());
+			preparedStatement.setString(2, student.getName());
+			preparedStatement.setInt(3, student.getAge());
+			preparedStatement.setString(4, student.getEmail());
+			preparedStatement.setString(5, student.getPassword());
+			preparedStatement.executeUpdate();
+			System.out.println("sign is sucessfull");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		} finally {
+			// end the connection between the driver
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public student getStudentById(int id) {
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pg_practice", "root", "root");
+			PreparedStatement preparedStatement = connection.prepareStatement("select * from student where id =?");
+			preparedStatement.setInt(1, id);
+			ResultSet result = preparedStatement.executeQuery();
+			while (result.next()) {
+				int id1 = result.getInt(1);
+				String name = result.getString(2);
+				int age = result.getInt(3);
+				String email = result.getString(4);
+				String password = result.getString(5);
+
+				student student = new student();
+
+				student.setId(id1);
+				student.setName(name);
+				student.setAge(age);
+				student.setEmail(email);
+				student.setPassword(password);
+				return student;
+
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public List<student> getAllStudent() {
+		List<student> list = new ArrayList<student>();
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pg_practice", "root", "root");
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery("select * from student ");
+			while (resultSet.next()) {
+				int id1 = resultSet.getInt(1);
+				String name = resultSet.getString(2);
+				int age = resultSet.getInt(3);
+				String email = resultSet.getString(4);
+				String password = resultSet.getString(5);
+
+				student student = new student();
+
+				student.setId(id1);
+				student.setName(name);
+				student.setAge(age);
+				student.setEmail(email);
+				student.setPassword(password);
+				list.add(student);
+			}
+			return list;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
+
+	public int deleteById(int id) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pg_practice", "root", "root");
+			PreparedStatement preparedStatement = connection.prepareStatement("delete from student where id=?");
+			preparedStatement.setInt(1, id);
+			int i = preparedStatement.executeUpdate();
+			if (i != 0)
+				return i;
+
+			else
+				return i;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	public void updateStudent(student student) {
+		Connection connection = null;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pg_practice", "root", "root");
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("update student set name=?,age =?,where id=?");
+			preparedStatement.setString(1, student.getName());
+			preparedStatement.setInt(2, student.getAge());
+			preparedStatement.setInt(3, student.getId());
+
+			preparedStatement.setString(4, student.getEmail());
+			preparedStatement.setString(5, student.getPassword());
+			int id = preparedStatement.executeUpdate();
+
+			if (id != 0)
+				System.out.println("updated sucessfully");
+			else
+				System.out.println("id invalid ");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void changePassword(student student) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pg_practice", "root", "root");
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("update student set password=?,where email=?");
+			preparedStatement.setString(1, student.getPassword());
+			preparedStatement.setString(2, student.getEmail());
+			int i = preparedStatement.executeUpdate();
+			if (i != 0)
+				System.out.println(" password as  benn changed success ");
+			else
+				System.out.println("no data found");
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	public student getStudentByEmail(String email) {
+		Connection connection = null;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pg_practice", "root", "root");
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("update student set password=?,where email=?");
+			preparedStatement.setString(1, email);
+			ResultSet result = preparedStatement.executeQuery();
+			while (result.next()) {
+				int id = result.getInt(1);
+				String name = result.getString(2);
+				int age = result.getInt(3);
+				String email1 = result.getString(4);
+				String password = result.getString(5);
+				student student = new student();
+				student.setId(id);
+				student.setName(name);
+				student.setAge(age);
+				student.setEmail(email1);
+				student.setPassword(password);
+				return student;
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+}
